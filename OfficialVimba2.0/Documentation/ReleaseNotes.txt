@@ -1,0 +1,316 @@
+===========================================================================
+
+  Vimba for Linux - Release Notes
+
+  Version: 2.0
+  Date:    2016-Feb-29
+===========================================================================
+
+--------------------------------
+Components and Version Reference
+--------------------------------
+
+Vimba Genicam Transport Layer modules
+-------------------------------------
+  GigE Transport Layer (VimbaGigETL.cti)                1.4.2*
+  USB Transport Layer (VimbaUSBTL.cti)                  1.0.2*
+
+APIs
+----
+  Vimba C API (libVimbaC.so)                            1.5.0*
+  Vimba C++ API (libVimbaCPP.so)                        1.5.0*
+  Image Transform Library (libVimbaImageTransform.so)   1.5.0*
+
+Tools
+-----
+  Vimba Viewer (VimbaViewer)                            2.0.0* (only x86 Linux)
+  Vimba Class Generator (VimbaClassGenerator)           1.0.6* (only x86 Linux)
+  Vimba Firmware Updater (VimbaFirmwareUpdater.exe)     1.0.2* (only x86 Linux)
+  Vimba Firmware Updater Console (FWUpdaterConsole)     1.0.1*
+
+Third Party Libraries
+---------------------
+  TinyXML (not shipped with Vimba)                      2.6.2
+  Qt                                                    4.8.4  (only x86 Linux)
+
+* Changed in this release of Vimba
+
+
+---------------------
+Hardware Requirements
+---------------------
+PC or laptop with 1 GHz 32-bit or 64-bit x86 processor or better.
+
+ARMv7-compatible 32 bit processor with 500 MHz or better (for hard-float with VFP3 support
+and Thumb extension), e.g. PandaBoard, ODROID-XU, BeagleBoneBlack, Mirabox
+
+When using Allied Vision GigE cameras, a built-in Gigabit Ethernet network interface
+or Gigabit Ethernet network card (one or more) is required.
+
+Furthermore, when using Allied Vision USB cameras, a built-in USB 3.0
+controller for PCI Express bus is required.
+
+Remark:
+  Testing has been performed on host controllers that are based on Intel chip
+  sets and Renesas chip sets. The driver may run on host controllers that
+  are based on chip sets from other vendors, too. Nevertheless for best
+  performance we highly recommend Intel chip sets.
+  However, if there are any problems please feel free to contact our Technical
+  Software Support (see below).
+
+------------------------
+Tested Operating Systems
+------------------------
+Allied Vision Vimba has been tested with the following 32 bit and 64 bit x86
+operating systems:
+
+  Ubuntu (Tested with version 12.04 LTS "Precise Pangolin")
+  Debian (Tested with version 6 "Squeeze")
+  Fedora (Tested with version 17 "Beefy Miracle")
+
+
+Allied Vision Vimba has been tested with the following 32-bit ARM
+operating systems:
+
+  Ubuntu hard-float (Tested with version 12.04 LTS "Precise Pangolin")
+  Ubuntu soft-float (Tested with version 11.10 "Oneiric Ocelot")
+  Angstrom hard-float (Tested with version 2012.12)
+
+  If running soft-float applications on hard-float boards, it might become
+  necessary to install additional runtime libraries for soft-float support.
+
+Allied Vision Vimba is most likely while not guaranteed to be compatible to follow up
+versions of the aforementioned environments.
+
+Please note that 1394 and CL support is not available for Linux.
+
+
+------------
+Installation
+------------
+Allied Vision Vimba comes as a tarball. In order to set up Vimba, follow these steps:
+
+  - Uncompress the archive with the command tar -xf ./Vimba.tgz to a
+    directory you have writing privileges for like /opt. Under this directory
+    Vimba will be installed in its own folder. In the following, we will refer
+    to this path as [InstallDir].
+  - Go to [InstallDir]/VimbaGigETL and/or [InstallDir]/VimbaUSBTL and execute the shell
+    script Install.sh with super user privileges (e.g., sudo./Install.sh). This
+    registers the GENICAM_GENTL32_PATH and/or the GENICAM_GENTL64_PATH environment
+    variable through a startup script in /etc/profile.d so that every GenICam GenTL
+    consumer (such as the examples that ship with Allied Vision Vimba) can access the
+    Allied Vision Gigabit Ethernet and USB Transport Layers. Please note that this is a
+    per-user setting.
+  - Reboot computer
+
+Now you are ready to run the VimbaViewer that can be found in Vimba/Viewer/Bin.
+This program allows you to configure your Allied Vision cameras and capture images.
+
+In order to change the IP configuration of a camera in a foreign subnet,
+VimbaViewer must be run with super user privileges
+(e.g., sudo -E ./VimbaViewer).
+Note that running it as root user instead of using sudo -E requires the
+GENICAM_GENTL32_PATH and / or GENICAM_GENTL64_PATH being set for the
+root user as well.
+
+Vimba includes many precompiled examples that can be found in
+Vimba/VimbaC/Examples/Bin and Vimba/VimbaCPP/Examples/Bin.
+If you want to compile these examples yourself, please refer to the user guide
+for instructions and required packages.
+
+For uninstalling Vimba, remove the startup scripts by running the shell scripts
+Uninstall.sh as super user. This prevents any GenTL consumer from loading the
+Allied Vision Gigabit Ethernet and USB Transport Layers. Then simply remove the
+installation directory.
+
+
+------------
+Known Issues
+------------
+  - When experiencing trouble with image acquisition try to increase the priority
+    of your application with "sudo -E nice -n -20 <command>".
+
+GigE Transport Layer:
+  - A change of the available camera access modes cannot be reported for cameras
+    in different subnets or with malconfigured IP addresses. These cameras can
+    be accessed in configuration mode from different hosts simultaneously.
+  - Not all ARM boards come with a GigE network interface. When acquiring images
+    with only 100 Mbit/s, make sure to set the "StreamBytesPerSecond" feature to
+    a reasonable small value (12 400 000). This adjustment is done automatically
+    when the camera is connected directly to a 100 Mbit/s interface.
+
+---------------------------
+Changes and release history
+---------------------------
+
+Changes in Vimba 2.0:
+-----------------------
+Vimba Setup
+  - Added Vimba Viewer Guide document
+  - Improved documents, new layout
+
+Vimba C
+  - Added functionality of loading and saving camera settings from / to XML
+  - Bug fixes
+
+Vimba C++
+  - Added functionality of loading and saving camera settings from / to XML
+  - Bug fixes
+
+Vimba Image Transform Library
+  - Support for conversion from BayerXX10,12 formats to 2 byte output formats (RGB[A], BGR[A])
+  - Added interface functions VmbSetImageInfoFromInputParameters and VmbSetImageInfoFromInputImage
+
+Vimba Viewer
+  - Enabled making use of load / save settings functionality
+  - Added tabsheet widgets for Brightness, ROI, Autofunction ROI, Trigger IO, Color
+  - Bug fixes
+
+USB Transport Layer
+  - Minor bug fixes
+
+GigE Transport Layer
+  - Reworked and improved filter driver
+
+Vimba Class Generator
+  - Changes for Camera Link support (affects only Windows)
+
+Changes in Vimba 1.4.1:
+-----------------------
+Package for ARMv7
+  - Support of USB Transport Layer
+
+Package for other Linux systems
+  - Support of USB Transport Layer
+  - Improved documentation
+
+Vimba C
+  - Extended camera support (e.g. float increments)
+  - Stability improvements
+  - Improved some examples
+  - Bug fixes
+
+Vimba C++
+  - Extended camera support (e.g. float increments, needs Vimba C 1.4)
+  - Improved error handling
+  - Improved some examples
+  - Added and improved examples
+  - Bug fixes
+
+Vimba Image Transform Library
+  - Added support for PFNC 10p and 12p formats
+  - Improved the documentation
+
+GigE Transport Layer
+  - Improved stability on high traffic networks
+  - Bug fixes for multi-camera usage and incomplete cleanup
+  - Fixed range of GevHeartbeatInterval and GevHeartbeatTimeout
+
+Vimba Viewer
+  - Added open camera by ID
+  - Added endianness switch in direct register dialog
+  - Many bug fixes
+
+Vimba Class Generator
+  - Small improvements
+
+Changes in Vimba 1.3.0:
+-----------------------
+Package for ARMv7 (new)
+  - Support of Vimba C API
+  - Support of Vimba C++ API
+  - Support of GigE Transport Layer
+
+Package for other Linux systems
+  - Added a Vimba Tour document and a Vimba Quickstart Guide
+  - Improved the other documents
+  - Added examples for Vimba C and C++
+  - Added an OpenMP version of the Vimba Image Transform Library
+
+Vimba C 1.3.0
+  - Fixed feature access for ancillary data
+  - Made device discovery blocking
+  - Added system feature GeVDiscoveryAllDuration for adjustable waiting time
+  - Fixed issues with mixed feature names
+  - Bug-fixes for improving stability
+
+Vimba C++ 1.3.0
+  - Fixed feature access for ancillary data
+  - Changes caused by bug fixes in Vimba C
+
+Vimba Image Transform Library 1.2.0
+  - Allowed more input for VmbSetImageInfoFromString
+  - Corrected return codes
+  - Removed transformations to Mono10/12/14 and big-endian data
+
+Vimba Viewer 1.1.3
+  - Improved handling for GigE camera list changes
+  - Fixed issues around saving images
+  - GUI usage improvements
+
+GigE Transport Layer 1.3.1
+  - Fixed GenTL compliance: Changed the Device ID from the serial number
+    to a MAC-based ID. This changes the way all APIs (C, C++ and .Net)
+    identify the cameras
+  - Added a document for GigE camera features
+  - Changed the supported GenTL version to 1.3 (e.g. new feature categories
+    BufferHandlingMode and StreamInformation)
+  - Separate features for heartbeat timeout and heartbeat interval
+  - Adjustable device discovery waiting time
+  - Fixed issues with similar serial numbers
+  - Fixed issues with many network interfaces
+
+Vimba Class Generator
+  - Minor changes to appearance and documentation
+
+Changes in Vimba 1.2.0:
+-----------------------
+Vimba C 1.2.0
+  - Version 1.2.0 is only compatible to AVT GigE TL Version 1.2.0 onwards
+  - Name independent search for AVT transport layers
+  - Made EnumEntries' "pIsImplemented" condition equivalent to "pIsAvailable"
+    to mimic the behavior of GenICam reference implementation
+
+Vimba C++ 1.2.0
+  - Fix for opening camera by IP address
+
+Vimba .NET 1.2.0
+  - Fix for 64bit version attempting to load 32bit transport layers
+  - Fix for opening camera by IP address
+
+Vimba Viewer 1.1.1
+  - SFNC Features directly beneath the root category get listed
+  - Many new pixel formats available for histogram support
+
+GigE Transport Layer 1.2.0
+  - Improved performance in case of many events
+  - Restriction to eight cameras removed
+  - Corrected Heartbeat feature
+  - Fixed support for small packets
+
+  
+----------------------------------------
+Allied Vision Technical Software Support
+----------------------------------------
+You can reach the Allied Vision Technical Software Support via the corresponding contact
+form for your region:
+
+   Asia Pacific
+   ------------
+        http://www.alliedvision.com/apac/support/contact-support.html
+
+   Europe, Middle East and Africa
+   ------------------------------
+        http://www.alliedvision.com/emea/support/contact-support.html
+
+   Germany
+   -------
+        http://www.alliedvision.com/de/support/support-kontaktieren.html
+
+   The Americas
+   ------------
+        http://www.alliedvision.com/us/support/contact-support.html
+
+   China
+   -----
+        http://www.alliedvision.com/cn/support/contact-support.html
