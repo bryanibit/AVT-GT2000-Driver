@@ -29,3 +29,5 @@ make
 ## This is the easiest driver and welcome you to add other function.
 
 TODO: add function about setting parameters for camera.
+
+*If you have any problems, just issue them. I would reply you as soon as possible.*
