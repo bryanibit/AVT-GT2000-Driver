@@ -29,11 +29,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 #include <iostream>
+#include </usr/include/x86_64-linux-gnu/sys/signal.h>
 
 #include "ThreadPool.h"
 
 #include "VimbaCPP/Include/VimbaCPP.h"
 #include "ApiController.h"
+
+bool __stop = false;
+
+void mySigintHandler(int sig){
+    __stop = true;
+
+}
+
 
 int main( int argc, char* argv[] )
 {
@@ -43,7 +52,7 @@ std::cout << "Please input camera name in command line!!!\n";
 std::cout << "./ExeProgName <camera_name1> <camera_name2>" <<std::endl;
 }
 
-
+signal(SIGINT, mySigintHandler);
 
 std::cout<<"///////////////////////////////////////////\n";
 std::cout<<"/// Vimba API Asynchronous Grab Example ///\n";
@@ -67,6 +76,7 @@ if ( Config.getPrintHelp() )
 Config.PrintHelp( std::cout );
 }*/
 //else
+
 ThreadPool pool(argc);
 std::vector< std::future<int> > results;
 for(int i = 1; i < argc; ++i) {
@@ -95,12 +105,20 @@ for(int i = 1; i < argc; ++i) {
                         std::cout << "Opening camera with ID: " << Config.getCameraID() << "\n";
                         err = apiController.StartContinuousImageAcquisition(Config);
                         if (VmbErrorSuccess == err) {
-                            std::cout << "Press <enter> to stop aquision...\n";
+                            /*std::cout << "Press <enter> to stop aquision...\n";
                             getchar();
-                            apiController.StopContinuousImageAcquisition();
+                            apiController.StopContinuousImageAcquisition();*/
+                            while(true)
+                            {
+                                if(__stop){
+                                    apiController.StopContinuousImageAcquisition();
+                                    apiController.ShutDown();
+                                }
+
+                            }
                         }
                     }
-                    apiController.ShutDown();
+                    //apiController.ShutDown();
                 }
 
                 if (VmbErrorSuccess == err) {

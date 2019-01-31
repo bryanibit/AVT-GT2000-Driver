@@ -45,6 +45,7 @@ class ApiController
   public:
     ApiController();
     ~ApiController();
+    // Add signal function
 
     //
     // Starts the Vimba API and loads all transport layers

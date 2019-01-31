@@ -47,6 +47,7 @@ ApiController::ApiController()
 ApiController::~ApiController()
 {
 }
+//add signal function
 
 //
 // Translates Vimba error codes to readable error messages
